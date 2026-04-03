@@ -65,18 +65,11 @@ PRODUCT_FIELDS = """
 
 def build_query(op_name, term):
     query = f"""
-    query {op_name}($searchTerm: String!, $siteId: String, $accountId: String) {{
-      {op_name}(
-        searchTerm: $searchTerm
-        siteId: $siteId
-        accountId: $accountId
-        pageSize: 5
-        page: 1
-      ) {{
-        products {{
+    query {op_name}($params: ProductSearchQuery!) {{
+      {op_name}(params: $params) {{
+        results {{
           {PRODUCT_FIELDS}
         }}
-        totalCount
       }}
     }}
     """
@@ -84,9 +77,13 @@ def build_query(op_name, term):
         "operationName": op_name,
         "query": query,
         "variables": {
-            "searchTerm": term,
-            "siteId": SITE_ID,
-            "accountId": SHOP_ACCOUNT_ID,
+            "params": {
+                "searchTerm": term,
+                "siteId": SITE_ID,
+                "accountId": SHOP_ACCOUNT_ID,
+                "pageSize": 5,
+                "page": 1,
+            }
         },
     }
 
@@ -111,7 +108,7 @@ def probe_operations(term="chicken breast"):
 
             data    = body.get("data") or {}
             op_data = data.get(op) or {}
-            products = op_data.get("products") if isinstance(op_data, dict) else None
+            products = op_data.get("results") if isinstance(op_data, dict) else None
             if products:
                 print(f"  *** SUCCESS: '{op}' returned {len(products)} product(s) ***\n")
                 return op
@@ -134,7 +131,7 @@ def fetch_prices(items, op_name):
         try:
             resp = requests.post(ENDPOINT, headers=HEADERS, json=payload, timeout=15)
             body = resp.json()
-            products = (body.get("data", {}).get(op_name) or {}).get("products", [])
+            products = (body.get("data", {}).get(op_name) or {}).get("results", [])
             if not products:
                 print("  No products found.\n")
                 continue
