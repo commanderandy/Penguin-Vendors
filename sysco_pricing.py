@@ -6,6 +6,7 @@ then fetches name, pack size, and price for a list of items.
 """
 
 import json
+import os
 import sys
 import requests
 
@@ -13,9 +14,17 @@ import requests
 
 ENDPOINT = "https://gateway-api.shop.sysco.com/graphql"
 
-# Replace the placeholder values below with your actual tokens.
-AUTH_TOKEN   = "REPLACE_WITH_BEARER_TOKEN"
-SYY_AUTH     = "REPLACE_WITH_SYY_AUTHORIZATION_VALUE"
+# Tokens are read from environment variables so credentials are never
+# stored in source code.  Set them before running:
+#   export SYSCO_AUTH_TOKEN="eyJ0eXAi..."
+#   export SYSCO_SYY_AUTH="eyJkYXRh..."
+AUTH_TOKEN = os.environ.get("SYSCO_AUTH_TOKEN", "")
+SYY_AUTH   = os.environ.get("SYSCO_SYY_AUTH", "")
+
+if not AUTH_TOKEN or not SYY_AUTH:
+    sys.exit(
+        "Error: SYSCO_AUTH_TOKEN and SYSCO_SYY_AUTH environment variables must be set."
+    )
 
 HEADERS = {
     "authorization":           f"Bearer {AUTH_TOKEN}",
