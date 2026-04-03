@@ -45,14 +45,7 @@ HEADERS = {
 SHOP_ACCOUNT_ID = "usbl-010-526731"
 SITE_ID         = "010"
 
-CANDIDATE_OPS = [
-    "searchV2",
-    "catalogSearch",
-    "productSearch",
-    "getProducts",
-    "search",
-    "SearchProducts",
-]
+CANDIDATE_OPS = ["searchProducts", "searchProductsV2"]
 
 PRODUCT_FIELDS = """
   supc
