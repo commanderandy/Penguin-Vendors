@@ -113,6 +113,7 @@ def search(term):
                 "q": term,
                 "num": 5,
                 "start": 0,
+                "facets": [],
             },
             "isSkipPriceInfo": False,
             "isIncludePriceInfoV2": True,
