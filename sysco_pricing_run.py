@@ -62,8 +62,7 @@ QUERY = """
 query SearchTypeaheadProductsWithPricingAndInventory(
   $params: ProductSearchQuery!,
   $isSkipPriceInfo: Boolean = false,
-  $isIncludePriceInfoV2: Boolean = false,
-  $isUseGraphStockStatusEnabled: Boolean = false
+  $isIncludePriceInfoV2: Boolean = false
 ) {
   searchTypeaheadProducts(params: $params) {
     metaInfo {
@@ -117,7 +116,6 @@ def search(term):
             },
             "isSkipPriceInfo": False,
             "isIncludePriceInfoV2": True,
-            "isUseGraphStockStatusEnabled": False,
         },
     }
     r = requests.post(ENDPOINT, headers=HEADERS, json=payload, timeout=15)
